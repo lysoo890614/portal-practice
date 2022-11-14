@@ -1,23 +1,24 @@
-import logo from './logo.svg';
 import './App.css';
+import axios from 'axios';
+import {useState} from "react";
+
+
 
 function App() {
+    const [success, setSuccess] = useState('');
+    async function onclick() {
+        let result = await axios.get('http://3.39.236.94:8080/home');
+        console.log(result);
+        setSuccess(result?.data.message);
+    }
+
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <div>
+            API Call Test: <span>{success}</span><br/>
+            <button onClick={()=>onclick()}>API Call</button>
+        </div>
     </div>
   );
 }
