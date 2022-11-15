@@ -7,7 +7,7 @@ import {useState} from "react";
 function App() {
     const [success, setSuccess] = useState('');
     async function onclick() {
-        let result = await axios.get('http://3.39.236.94:8080/home');
+        let result = await axios.get('http://back-lb-757133604.ap-northeast-2.elb.amazonaws.com/home');
         console.log(result);
         setSuccess(result?.data.message);
     }
