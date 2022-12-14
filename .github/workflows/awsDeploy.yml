@@ -1,0 +1,43 @@
+name: github-action-practice
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: actions/checkout@v2
+        uses: actions/checkout@v2
+
+      - name: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_KEY}}
+          aws-region: ap-northeast-2
+
+
+
+      - name: npm install and Build
+        run: |
+          npm install
+          mkdir -p deploy/portal-source
+          cp codedeploy/appspec.yml deploy/appspec.yml
+          cp codedeploy/stop_server.sh deploy/stop_server.sh
+          cp codedeploy/start_server.sh deploy/start_server.sh
+
+          npm run build
+          cp * deploy/portal-source
+          tar -zcvf portal-practice.tar.gz -C deploy .
+
+        shell: bash
+
+      - name: s3 upload
+        run: |
+          aws s3 cp portal-practice.tar.gz s3://deploy-practice/portal-practice/portal-practice.tar.gz
+
+      - name: Run codedeploy
+        run: |
+          aws deploy create-deployment --application-name deploy_practice --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name DEPLOY_portal-practice --s3-location bucket=deploy-practice,bundleType=tgz,key=portal-practice/portal-practice.tar.gz
