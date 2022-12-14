@@ -18,11 +18,14 @@ jobs:
           aws-secret-access-key: ${{secrets.AWS_SECRET_KEY}}
           aws-region: ap-northeast-2
 
+      - name: Check Node v            # Node v 확인
+        run: node -v
 
+      - name: Install Dependencies    # 의존 파일 설치
+        run: npm install
 
       - name: npm install and Build
         run: |
-          npm install
           mkdir -p deploy/portal-source
           cp codedeploy/appspec.yml deploy/appspec.yml
           cp codedeploy/stop_server.sh deploy/stop_server.sh
