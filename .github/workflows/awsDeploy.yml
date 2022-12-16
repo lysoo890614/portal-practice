@@ -33,4 +33,4 @@ jobs:
 
       - name: s3 upload
         run: |
-          aws s3 cp build s3://portal-static-web-hosting
+          aws s3 sync build s3://portal-static-web-hosting
