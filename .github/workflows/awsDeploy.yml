@@ -24,23 +24,14 @@ jobs:
       - name: Install Dependencies    # 의존 파일 설치
         run: npm install
 
-      - name: npm install and Build
+      - name: Build
         run: |
-          mkdir -p deploy/portal-source
-          cp codedeploy/appspec.yml deploy/appspec.yml
-          cp codedeploy/stop_server.sh deploy/stop_server.sh
-          cp codedeploy/start_server.sh deploy/start_server.sh
+          mkdir deploy
 
           npm run build
-          cp * deploy/portal-source
-          tar -zcvf portal-practice.tar.gz -C deploy .
 
         shell: bash
 
       - name: s3 upload
         run: |
-          aws s3 cp portal-practice.tar.gz s3://deploy-practice/portal-practice/portal-practice.tar.gz
-
-      - name: Run codedeploy
-        run: |
-          aws deploy create-deployment --application-name deploy_practice --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name DEPLOY_portal-practice --s3-location bucket=deploy-practice,bundleType=tgz,key=portal-practice/portal-practice.tar.gz
+          aws s3 cp build s3://portal-static-web-hosting/build
