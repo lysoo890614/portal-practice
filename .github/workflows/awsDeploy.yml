@@ -26,12 +26,11 @@ jobs:
 
       - name: Build
         run: |
-          mkdir deploy
-
+          
           npm run build
 
         shell: bash
 
       - name: s3 upload
         run: |
-          aws s3 cp build s3://portal-static-web-hosting/build
+          aws s3 cp build s3://portal-static-web-hosting
